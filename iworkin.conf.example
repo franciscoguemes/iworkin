@@ -1,0 +1,21 @@
+#
+# Example configuration file shipped with the application
+#
+
+
+# ----------------------------------------------------------------------
+#                   JIRA CONFIGURATION
+# ----------------------------------------------------------------------
+[JIRA]
+JIRA_PROJECT_PREFIX = ticket_prefix
+JIRA_URL = base_url_to_your_jira_system
+JIRA_USER = your_jira_user
+JIRA_PASSWORD = your_jira_password
+
+
+# ----------------------------------------------------------------------
+#                   LOCAL CONFIGURATION
+# ----------------------------------------------------------------------
+[LOCAL]
+PROJECT_BASE_DIR = path_to_your_code_repository
+PERSONAL_NOTES_PATH = path_to_your_personal_files
