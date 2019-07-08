@@ -24,8 +24,11 @@ class GitManager:
     def is_repo_dirty(self):
         return self.__repo.is_dirty()
 
-    def get_non_commited_files(self):
-        return self.__repo.untracked_files()
+    def get_untracked_files(self):
+        return self.__repo.index.diff(None)
+
+    def get_staged_files(self):
+        return self.__repo.index.diff("HEAD")
 
     def __get_active_branch(self):
         return self.__repo.active_branch
