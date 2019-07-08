@@ -14,6 +14,7 @@ from jirautils.JiraAmbassador import JiraAmbassador
 from linux.DirectoryManager import DirectoryManager
 from gitutils.GitManager import GitManager
 from dockerutils.DockerManager import DockerManager
+from terminalutils.Terminal import  Terminal
 
 DEFAULT_CONFIG_FILE = "iworkin.conf"
 
@@ -98,20 +99,34 @@ def create_directories(ticket, sprint_number, personal_notes_path):
 
 def handle_braches(ticket, ticket_title, sprint_number, project_base_dir):
     gm = GitManager(project_base_dir)
-    if gm.is_repo_dirty():
-        # TODO: Print proper error message...
-        print("Non commited files: ")
-        print(gm.get_non_commited_files())
-        return False
 
     active_branch = gm.get_active_branch_name()
     print(f"Active branch: {active_branch}")
+
+    if gm.is_repo_dirty():
+        print_dirty_repo_error_message(gm)
+        return False
+
     branch_name = GitManager.get_ticket_branch_name(ticket, ticket_title)
     if active_branch != branch_name:
         gm.change_to_sprint_branch(sprint_number)
         print(f"Active branch: {gm.get_active_branch_name()}")
         gm.change_to_ticket_branch(ticket, ticket_title)
         print(f"Active branch: {gm.get_active_branch_name()}")
+
+
+def print_dirty_repo_error_message(gm):
+    Terminal.error("ERROR: There are non comited changes!")
+    Terminal.warning("Please check the following information and commit or undo your changes before try again...")
+    files = gm.get_untracked_files()
+    if len(files) > 0:
+        print(f"There are {len(files)} untracked files")
+        print(*files, sep="\n\t")
+
+    staged_files = gm.get_staged_files()
+    if len(staged_files) > 0:
+        print(f"There are {len(staged_files)} staged files")
+        print(*staged_files, sep="\n\t")
 
 
 def start_docker_container(ticket,sprint_number):
