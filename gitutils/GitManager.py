@@ -12,6 +12,7 @@ from git import Repo
 from mavenutils.MavenProject import MavenProject
 import re
 
+
 class GitManager:
     """This class represent an abstraction of the git source control in order to make the code more readable.
     """
@@ -66,11 +67,11 @@ class GitManager:
         if not self.__exists_branch(branch_name):
             # branch = self.__repo.git.checkout('-b', branch_name)
             branch = self.__create_branch(branch_name)
-            #self.__push(branch)
+            # self.__push(branch)
             self.__repo.git.push("origin", branch)
         else:
             branch = self._get_branch(branch_name)
-            #TODO: Before doing a pull check that the branch exists in the remote repository
+            # TODO: Before doing a pull check that the branch exists in the remote repository
             self.pull()
 
     @staticmethod
@@ -79,23 +80,24 @@ class GitManager:
 
     @staticmethod
     def get_ticket_branch_name(ticket, ticket_title):
-
+        title = GitManager.format_branch_name(ticket_title)
         return ticket + "_" + ticket_title.replace(" ", "_")
 
-    def __calculate_branch_name_from_ticket_title(self, ticket_title):
-        #TODO: Do this with regex and handle all these cases: https://stackoverflow.com/a/3651867
+    @staticmethod
+    def format_branch_name(self, branch_name):
+        # TODO: Do this with regex and handle all these cases: https://stackoverflow.com/a/3651867
 
-        #Replaces spaces by underscores
-        branch_name = ticket_title.replace(" ", "_")
+        # Replaces spaces by underscores
+        formatted_name = branch_name.replace(" ", "_")
 
-        #Replaces two consecutive dots by one single dot
-        branch_name = re.sub('\\.\\.', '', branch_name)
+        # Replaces two consecutive dots by one single dot
+        formatted_name = re.sub('\\.\\.', '', formatted_name)
 
-        #Replaces a dot at the end of the branch_name --> https://stackoverflow.com/questions/3675318/how-to-replace-the-some-characters-from-the-end-of-a-string
-        branch_name = re.sub('\\.$', '', branch_name)
+        # Replaces a dot at the end of the branch_name
+        # --> https://stackoverflow.com/questions/3675318/how-to-replace-the-some-characters-from-the-end-of-a-string
+        formatted_name = re.sub('\\.$', '', formatted_name)
 
-        return branch_name;
-
+        return formatted_name;
 
     def __exists_branch(self, branch_name):
         exists = False
