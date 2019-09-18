@@ -10,7 +10,7 @@
 
 from git import Repo
 from mavenutils.MavenProject import MavenProject
-
+import re
 
 class GitManager:
     """This class represent an abstraction of the git source control in order to make the code more readable.
@@ -49,7 +49,7 @@ class GitManager:
             mp.store_changes()
 
             # Stage changes
-            self.__repo.git.add('-U')
+            self.__repo.git.add(update=True)
 
             # Commit changes
             comment = "Change version numbers in pom.xml files for version " + str(sprint_number)
@@ -79,7 +79,23 @@ class GitManager:
 
     @staticmethod
     def get_ticket_branch_name(ticket, ticket_title):
+
         return ticket + "_" + ticket_title.replace(" ", "_")
+
+    def __calculate_branch_name_from_ticket_title(self, ticket_title):
+        #TODO: Do this with regex and handle all these cases: https://stackoverflow.com/a/3651867
+
+        #Replaces spaces by underscores
+        branch_name = ticket_title.replace(" ", "_")
+
+        #Replaces two consecutive dots by one single dot
+        branch_name = re.sub('\\.\\.', '', branch_name)
+
+        #Replaces a dot at the end of the branch_name --> https://stackoverflow.com/questions/3675318/how-to-replace-the-some-characters-from-the-end-of-a-string
+        branch_name = re.sub('\\.$', '', branch_name)
+
+        return branch_name;
+
 
     def __exists_branch(self, branch_name):
         exists = False
@@ -109,4 +125,4 @@ class GitManager:
         self.__push(branch)
 
     def __push(self, branch):
-        self.__repo.git.__push('--set-upstream', 'origin', branch)
+        self.__repo.git.push('--set-upstream', 'origin', branch)
