@@ -41,6 +41,8 @@ class GitManager:
     def change_to_sprint_branch(self, sprint_number):
         branch_name = GitManager.get_sprint_branch_name(sprint_number)
         if not self.__exists_branch(branch_name):
+            # TODO: The sprint branch does not exists, that means is the first ticket in the new sprint therefore the
+            #  docker image for the new sprint must be created...
             branch = self.__create_branch(branch_name)
 
             # Change here the version numbers in the pom.xml files
