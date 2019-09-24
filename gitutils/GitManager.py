@@ -86,7 +86,7 @@ class GitManager:
         return ticket + "_" + ticket_title.replace(" ", "_")
 
     @staticmethod
-    def format_branch_name(self, branch_name):
+    def format_branch_name(branch_name):
         # TODO: Do this with regex and handle all these cases: https://stackoverflow.com/a/3651867
 
         # Replaces spaces by underscores
