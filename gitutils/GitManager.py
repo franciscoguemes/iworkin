@@ -65,7 +65,7 @@ class GitManager:
             self.pull()
 
     def change_to_ticket_branch(self, ticket, ticket_title):
-        branch_name = GitManager.get_ticket_branch_name(ticket,ticket_title)
+        branch_name = GitManager.get_ticket_branch_name(ticket, ticket_title)
         if not self.__exists_branch(branch_name):
             # branch = self.__repo.git.checkout('-b', branch_name)
             branch = self.__create_branch(branch_name)
@@ -82,22 +82,46 @@ class GitManager:
 
     @staticmethod
     def get_ticket_branch_name(ticket, ticket_title):
-        title = GitManager.format_branch_name(ticket_title)
-        return ticket + "_" + ticket_title.replace(" ", "_")
+        formatted_title = GitManager.format_branch_name(ticket_title)
+        return ticket + "_" + formatted_title
 
     @staticmethod
     def format_branch_name(branch_name):
         # TODO: Do this with regex and handle all these cases: https://stackoverflow.com/a/3651867
 
-        # Replaces spaces by underscores
-        formatted_name = branch_name.replace(" ", "_")
+        # 1- Replace Dash at the beginning with nothing
+        formatted_name = re.sub('-$', '', branch_name)
 
-        # Replaces two consecutive dots by one single dot
+        # 3- Replaces two consecutive dots by one single dot
         formatted_name = re.sub('\\.\\.', '', formatted_name)
 
-        # Replaces a dot at the end of the branch_name
-        # --> https://stackoverflow.com/questions/3675318/how-to-replace-the-some-characters-from-the-end-of-a-string
+        # 4- Replaces spaces by underscores
+        formatted_name = re.sub("\\s", "_", formatted_name)
+
+        # 4- Replace tilde (~), caret (^) and colon (:) with nothing .
+        formatted_name = re.sub('[:\\^~]', "--", formatted_name)
+
+        # 5- Replace question mark (?), asterisk (*) or open bracket (])
+        formatted_name = re.sub('[\\?\\*\\[]', "-_-", formatted_name)
+
+        # 6- Replace the beginning or trailing slash (/) with nothing
+        formatted_name = re.sub('\\/$', "", formatted_name)
+        formatted_name = re.sub('\\/^', "", formatted_name)
+        # 6- Replace multiple consecutive slashes (/) with nothing
+        formatted_name = re.sub('(\\/)*', "", formatted_name)
+
+        # 7- Replaces a dot at the end of the branch_name
         formatted_name = re.sub('\\.$', '', formatted_name)
+
+        # 8- Replace the sequence @{
+        formatted_name = re.sub('@\\{', '', formatted_name)
+
+        # 9- Check it is not the single character (@)
+        if formatted_name == "@":
+            return "____"
+
+        # 10- Replace the sequence char (\)
+        formatted_name = re.sub('\\\\', '', formatted_name)
 
         return formatted_name;
 
