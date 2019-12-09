@@ -9,6 +9,7 @@
 
 
 from git import Repo
+from git import GitCommandError
 from mavenutils.MavenProject import MavenProject
 import re
 
@@ -126,10 +127,32 @@ class GitManager:
         return formatted_name;
 
     def __exists_branch(self, branch_name):
+        """Tests whether the branch exists in the local and in the remote repository.
+
+        Args:
+            branch_name: The name of the branch
+
+        Returns:
+            True if the branch exists. Otherwise False.
+        """
+        exists = self.__exists_branch_in_local_repo(branch_name)
+        if not exists:
+            exists = self.__exists_branch_in_remote_repo(branch_name)
+        return exists
+
+    def __exists_branch_in_local_repo(self, branch_name):
         exists = False
         heads = self.__repo.heads
         if branch_name in heads:
             exists = True
+        return exists
+
+    def __exists_branch_in_remote_repo(self, branch_name):
+        exists = True
+        try:
+            self.__repo.git.checkout(branch_name)
+        except GitCommandError as exc:
+            exists = False
         return exists
 
     def __create_branch(self, branch_name):
