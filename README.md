@@ -18,3 +18,12 @@ does the application expect to find.
 
 
 TODO:
+    Add proper error handling through exceptions
+    
+    
+Error cases to handle gracefully:
+    The user inputs a ticket that do not exists
+        Wrong ticket prefix
+        Wrong ticket number
+    The user decides to work in a ticket that is not assigned to any sprint
+    
