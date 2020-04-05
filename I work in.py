@@ -14,7 +14,7 @@ from jirautils.JiraAmbassador import JiraAmbassador
 from linux.DirectoryManager import DirectoryManager
 from gitutils.GitManager import GitManager
 from dockerutils.DockerManager import DockerManager
-from terminalutils.Terminal import  Terminal
+from terminalutils.Terminal import Terminal
 
 DEFAULT_CONFIG_FILE = "iworkin.conf"
 
