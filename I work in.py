@@ -74,7 +74,7 @@ def check_config(config):
         More info about config files on: https://docs.python.org/3/library/configparser.html
         """
         sys.exit(msg)
-    #TODO: Check the resto of the configuration parameters here...
+    #TODO: Check the rest of the configuration parameters here...
 
 def check_ticket_nomenclature(jira_project_prefix, ticket_name):
     """
